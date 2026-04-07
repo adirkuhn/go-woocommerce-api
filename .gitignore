@@ -10,6 +10,8 @@
 
 # Output of go coverage
 *.out
+coverage
+coverage.html
 
 # Dependency directories
 vendor/
