@@ -4,7 +4,13 @@ A Woocommerce API Golang Wrapper for the [Woocommerce Rest API (v3)](https://woo
 # Install
 
 ```console
-$ go get github.com/dinistavares/go-woocommerce-api
+$ go get github.com/adirkuhn/go-woocommerce-api
+```
+
+# Tests
+
+```console
+$ go test ./...
 ```
 
 # Usage
@@ -13,7 +19,7 @@ Create a new API client and authenticate with your REST API keys. You should spe
 
 ```go
 import (
-  "github.com/dinistavares/go-woocommerce-api"
+  "github.com/adirkuhn/go-woocommerce-api"
 )
 
 func main(){
@@ -42,6 +48,7 @@ The API routes are broken down into services, the supported services are:
 * Refunds `(Create, Get, List, Delete)`
 * Products `(Create, Get, List, Update, Delete, Batch)`
 * Webhooks `(Create, Get, List, Update, Delete, Batch)`
+* TaxRates `(Create, Get, List, Update, Delete, Batch)`
 
 List Orders by customer ID and page number.
 
@@ -49,13 +56,14 @@ List Orders by customer ID and page number.
 func (client *woocommerce.Client) listOrders() {
   customerID := 3
   pageNumber := 1
-
+  
   opts := woocommerce.ListOrdersParams{
     Customer: customerID,
     Page: pageNumber,
   }
 
-  orders, resp, err := client.Orders.List(opts)
+  ctx := context.Background()
+  orders, resp, err := client.Orders.List(ctx, opts)
 
   if err != nil {
     // Handle errors
