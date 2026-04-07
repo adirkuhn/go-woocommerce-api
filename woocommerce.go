@@ -52,6 +52,7 @@ type Client struct {
 	OrderNotes *OrderNotesService
 	Refunds    *RefundsService
 	Products   *ProductsService
+	TaxRates   *TaxRatesService
 	Webhooks   *WebhookService
 }
 
@@ -116,6 +117,7 @@ func NewWithConfig(config ClientConfig) (*Client, error) {
 	client.OrderNotes = &OrderNotesService{client: client}
 	client.Refunds = &RefundsService{client: client}
 	client.Products = &ProductsService{client: client}
+	client.TaxRates = &TaxRatesService{client: client}
 	client.Webhooks = &WebhookService{client: client}
 
 	return client, nil
