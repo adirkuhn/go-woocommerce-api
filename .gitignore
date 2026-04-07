@@ -19,3 +19,7 @@ vendor/
 # IDE
 .idea/
 .vscode/
+
+# AI
+CLAUDE.md
+.claude/
