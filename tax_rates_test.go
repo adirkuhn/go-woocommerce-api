@@ -72,8 +72,8 @@ func TestTaxRatesList(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if len(*taxRates) != 2 {
-		t.Errorf("len: got %d, want 2", len(*taxRates))
+	if len(taxRates) != 2 {
+		t.Errorf("len: got %d, want 2", len(taxRates))
 	}
 }
 

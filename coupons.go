@@ -5,6 +5,15 @@ import (
 	"net/http"
 )
 
+type CouponsServiceInterface interface {
+	Create(ctx context.Context, coupon *Coupon) (*Coupon, *http.Response, error)
+	Get(ctx context.Context, couponID string) (*Coupon, *http.Response, error)
+	List(ctx context.Context, opts *ListCouponParams) (*[]Coupon, *http.Response, error)
+	Update(ctx context.Context, couponID string, coupon *Coupon) (*Coupon, *http.Response, error)
+	Delete(ctx context.Context, couponID string, opts *DeleteCouponParams) (*Coupon, *http.Response, error)
+	Batch(ctx context.Context, opts *BatchCouponUpdate) (*BatchCouponUpdateResponse, *http.Response, error)
+}
+
 // Coupon service
 type CouponsService service
 

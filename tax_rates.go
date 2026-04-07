@@ -5,6 +5,15 @@ import (
 	"net/http"
 )
 
+type TaxRatesServiceInterface interface {
+	Create(ctx context.Context, taxRate *TaxRate) (*TaxRate, *http.Response, error)
+	Get(ctx context.Context, taxRateID string) (*TaxRate, *http.Response, error)
+	List(ctx context.Context, opts *ListTaxRatesParams) ([]TaxRate, *http.Response, error)
+	Update(ctx context.Context, taxRateID string, taxRate *TaxRate) (*TaxRate, *http.Response, error)
+	Delete(ctx context.Context, taxRateID string, opts *DeleteTaxRateParams) (*TaxRate, *http.Response, error)
+	Batch(ctx context.Context, opts *BatchTaxRateUpdate) (*BatchTaxRateUpdateResponse, *http.Response, error)
+}
+
 // Tax Rates service
 type TaxRatesService service
 
@@ -86,7 +95,7 @@ func (service *TaxRatesService) Get(ctx context.Context, taxRateID string) (*Tax
 }
 
 // List tax rates. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#list-all-tax-rates
-func (service *TaxRatesService) List(ctx context.Context, opts *ListTaxRatesParams) (*[]TaxRate, *http.Response, error) {
+func (service *TaxRatesService) List(ctx context.Context, opts *ListTaxRatesParams) ([]TaxRate, *http.Response, error) {
 	req, err := service.client.NewRequest(ctx, "GET", "/taxes", opts, nil)
 	if err != nil {
 		return nil, nil, err
@@ -98,7 +107,7 @@ func (service *TaxRatesService) List(ctx context.Context, opts *ListTaxRatesPara
 		return nil, response, err
 	}
 
-	return taxRates, response, nil
+	return *taxRates, response, nil
 }
 
 // Update a tax rate. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#update-a-tax-rate

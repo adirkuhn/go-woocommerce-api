@@ -5,6 +5,15 @@ import (
 	"net/http"
 )
 
+type ProductsServiceInterface interface {
+	Create(ctx context.Context, product *Product) (*Product, *http.Response, error)
+	Get(ctx context.Context, productID string) (*Product, *http.Response, error)
+	List(ctx context.Context, opts *ListProductParams) (*[]Product, *http.Response, error)
+	Update(ctx context.Context, productID string, product *Product) (*Product, *http.Response, error)
+	Delete(ctx context.Context, productID string, opts *DeleteProductParams) (*Product, *http.Response, error)
+	Batch(ctx context.Context, opts *BatchProductUpdate) (*BatchProductUpdateResponse, *http.Response, error)
+}
+
 // Product service
 type ProductsService service
 

@@ -5,6 +5,15 @@ import (
 	"net/http"
 )
 
+type OrdersServiceInterface interface {
+	Create(ctx context.Context, order *Order) (*Order, *http.Response, error)
+	Get(ctx context.Context, orderID string, opts *GetOrderParams) (*Order, *http.Response, error)
+	List(ctx context.Context, opts *ListOrdersParams) (*[]Order, *http.Response, error)
+	Update(ctx context.Context, orderID string, order *Order) (*Order, *http.Response, error)
+	Delete(ctx context.Context, orderID string, opts *DeleteOrderParams) (*Order, *http.Response, error)
+	Batch(ctx context.Context, opts *BatchOrderUpdate) (*BatchOrderUpdateResponse, *http.Response, error)
+}
+
 // Orders service
 type OrdersService service
 
@@ -74,25 +83,25 @@ type CouponLine struct {
 }
 
 type FeeLine struct {
-	ID         int          `json:"id,omitempty"`
-	Name       string       `json:"name,omitempty"`
-	TaxClass   string       `json:"tax_class,omitempty"`
-	TaxStatus  string       `json:"tax_status,omitempty"`
-	Amount     string       `json:"amount,omitempty"`
-	Total      string       `json:"total,omitempty"`
-	TotalTax   string       `json:"total_tax,omitempty"`
-	Taxes      *[]Taxes     `json:"taxes,omitempty"`
-	MetaData   *[]MetaData  `json:"meta_data,omitempty"`
+	ID        int         `json:"id,omitempty"`
+	Name      string      `json:"name,omitempty"`
+	TaxClass  string      `json:"tax_class,omitempty"`
+	TaxStatus string      `json:"tax_status,omitempty"`
+	Amount    string      `json:"amount,omitempty"`
+	Total     string      `json:"total,omitempty"`
+	TotalTax  string      `json:"total_tax,omitempty"`
+	Taxes     *[]Taxes    `json:"taxes,omitempty"`
+	MetaData  *[]MetaData `json:"meta_data,omitempty"`
 }
 
 type Taxes struct {
-	ID                int    `json:"id,omitempty"`
-	RateCode          string `json:"rate_code,omitempty"`
-	RateID            string `json:"rate_id,omitempty"`
-	Label             string `json:"label,omitempty"`
-	Compound          bool   `json:"compound"`
-	TaxTotal          string `json:"tax_total,omitempty"`
-	ShippingTaxTotal  string `json:"shipping_tax_total,omitempty"`
+	ID               int    `json:"id,omitempty"`
+	RateCode         string `json:"rate_code,omitempty"`
+	RateID           string `json:"rate_id,omitempty"`
+	Label            string `json:"label,omitempty"`
+	Compound         bool   `json:"compound"`
+	TaxTotal         string `json:"tax_total,omitempty"`
+	ShippingTaxTotal string `json:"shipping_tax_total,omitempty"`
 }
 
 type LineItems struct {
@@ -115,15 +124,15 @@ type LineItems struct {
 }
 
 type TaxLines struct {
-	ID               int    `json:"id,omitempty"`
-	RateCode         string `json:"rate_code,omitempty"`
-	RateID           int    `json:"rate_id,omitempty"`
-	Label            string `json:"label,omitempty"`
-	Compound         bool   `json:"compound"`
-	TaxTotal         string `json:"tax_total,omitempty"`
-	ShippingTaxTotal string `json:"shipping_tax_total,omitempty"`
+	ID               int     `json:"id,omitempty"`
+	RateCode         string  `json:"rate_code,omitempty"`
+	RateID           int     `json:"rate_id,omitempty"`
+	Label            string  `json:"label,omitempty"`
+	Compound         bool    `json:"compound"`
+	TaxTotal         string  `json:"tax_total,omitempty"`
+	ShippingTaxTotal string  `json:"shipping_tax_total,omitempty"`
 	RatePercent      float64 `json:"rate_percent"`
-	MetaData         *[]any `json:"meta_data,omitempty"`
+	MetaData         *[]any  `json:"meta_data,omitempty"`
 }
 
 type ShippingLines struct {
@@ -138,26 +147,26 @@ type ShippingLines struct {
 }
 
 type ListOrdersParams struct {
-	Context       string    `url:"context,omitempty"`
-	Page          int       `url:"page,omitempty"`
-	PerPage       int       `url:"per_page,omitempty"`
-	Search        string    `url:"search,omitempty"`
-	Exclude       *[]int    `url:"exclude,omitempty"`
-	Include       *[]int    `url:"include,omitempty"`
-	Offset        int       `url:"offset,omitempty"`
-	Order         string    `url:"order,omitempty"`
-	OrderBy       string    `url:"orderby,omitempty"`
-	Customer      int       `url:"customer,omitempty"`
-	Product       int       `url:"product,omitempty"`
-	DecimalPoints int       `url:"dp,omitempty"`
-	Parent        *[]int    `url:"parent,omitempty"`
-	ParentExclude *[]int    `url:"parent_exclude,omitempty"`
-	DatesAreGMT   bool      `url:"dates_are_gmt"`
-	After         string    `url:"after,omitempty"`
-	Before        string    `url:"before,omitempty"`
-	ModifiedAfter string    `url:"modified_after,omitempty"`
-	ModifiedBefore string   `url:"modified_before,omitempty"`
-	Status        *[]string `url:"status,omitempty"`
+	Context        string    `url:"context,omitempty"`
+	Page           int       `url:"page,omitempty"`
+	PerPage        int       `url:"per_page,omitempty"`
+	Search         string    `url:"search,omitempty"`
+	Exclude        *[]int    `url:"exclude,omitempty"`
+	Include        *[]int    `url:"include,omitempty"`
+	Offset         int       `url:"offset,omitempty"`
+	Order          string    `url:"order,omitempty"`
+	OrderBy        string    `url:"orderby,omitempty"`
+	Customer       int       `url:"customer,omitempty"`
+	Product        int       `url:"product,omitempty"`
+	DecimalPoints  int       `url:"dp,omitempty"`
+	Parent         *[]int    `url:"parent,omitempty"`
+	ParentExclude  *[]int    `url:"parent_exclude,omitempty"`
+	DatesAreGMT    bool      `url:"dates_are_gmt"`
+	After          string    `url:"after,omitempty"`
+	Before         string    `url:"before,omitempty"`
+	ModifiedAfter  string    `url:"modified_after,omitempty"`
+	ModifiedBefore string    `url:"modified_before,omitempty"`
+	Status         *[]string `url:"status,omitempty"`
 }
 
 type GetOrderParams struct {

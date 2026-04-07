@@ -5,6 +5,13 @@ import (
 	"net/http"
 )
 
+type RefundsServiceInterface interface {
+	Create(ctx context.Context, orderID string, refund *Refund) (*Refund, *http.Response, error)
+	Get(ctx context.Context, orderID string, refundID string) (*Refund, *http.Response, error)
+	List(ctx context.Context, orderID string, opts *ListRefundParams) (*[]Refund, *http.Response, error)
+	Delete(ctx context.Context, orderID string, refundID string, opts *DeleteRefundParams) (*Refund, *http.Response, error)
+}
+
 // Refunds service
 type RefundsService service
 
@@ -48,20 +55,20 @@ type RefundTax struct {
 }
 
 type ListRefundParams struct {
-	Context        string `url:"context,omitempty"`
-	Page           int    `url:"page,omitempty"`
-	PerPage        int    `url:"per_page,omitempty"`
-	Search         string `url:"search,omitempty"`
-	Exclude        *[]int `url:"exclude,omitempty"`
-	Include        *[]int `url:"include,omitempty"`
-	Offset         int    `url:"offset,omitempty"`
-	Order          string `url:"order,omitempty"`
-	OrderBy        string `url:"orderby,omitempty"`
-	After          string `url:"after,omitempty"`
-	Before         string `url:"before,omitempty"`
-	Parent         *[]int `url:"parent,omitempty"`
-	ParentExclude  *[]int `url:"parent_exclude,omitempty"`
-	Dp             int    `url:"dp,omitempty"`
+	Context       string `url:"context,omitempty"`
+	Page          int    `url:"page,omitempty"`
+	PerPage       int    `url:"per_page,omitempty"`
+	Search        string `url:"search,omitempty"`
+	Exclude       *[]int `url:"exclude,omitempty"`
+	Include       *[]int `url:"include,omitempty"`
+	Offset        int    `url:"offset,omitempty"`
+	Order         string `url:"order,omitempty"`
+	OrderBy       string `url:"orderby,omitempty"`
+	After         string `url:"after,omitempty"`
+	Before        string `url:"before,omitempty"`
+	Parent        *[]int `url:"parent,omitempty"`
+	ParentExclude *[]int `url:"parent_exclude,omitempty"`
+	Dp            int    `url:"dp,omitempty"`
 }
 
 type DeleteRefundParams struct {

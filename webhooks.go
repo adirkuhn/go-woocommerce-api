@@ -5,6 +5,15 @@ import (
 	"net/http"
 )
 
+type WebhookServiceInterface interface {
+	Create(ctx context.Context, webhook *Webhook) (*Webhook, *http.Response, error)
+	Get(ctx context.Context, webhookID string) (*Webhook, *http.Response, error)
+	List(ctx context.Context, opts *ListWebhooksParams) (*[]Webhook, *http.Response, error)
+	Update(ctx context.Context, webhookID string, webhook *Webhook) (*Webhook, *http.Response, error)
+	Delete(ctx context.Context, webhookID string, opts *DeleteWebhookParams) (*Webhook, *http.Response, error)
+	Batch(ctx context.Context, opts *BatchWebhookUpdate) (*BatchWebhookUpdateResponse, *http.Response, error)
+}
+
 // Webhooks service
 type WebhookService service
 

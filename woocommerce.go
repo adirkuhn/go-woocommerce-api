@@ -46,14 +46,14 @@ type Client struct {
 	auth    *auth
 	baseURL *url.URL
 
-	Coupons    *CouponsService
-	Customers  *CustomersService
-	Orders     *OrdersService
-	OrderNotes *OrderNotesService
-	Refunds    *RefundsService
-	Products   *ProductsService
-	TaxRates   *TaxRatesService
-	Webhooks   *WebhookService
+	Coupons    CouponsServiceInterface
+	Customers  CustomersServiceInterface
+	Orders     OrdersServiceInterface
+	OrderNotes OrderNotesServiceInterface
+	Refunds    RefundsServiceInterface
+	Products   ProductsServiceInterface
+	TaxRates   TaxRatesServiceInterface
+	Webhooks   WebhookServiceInterface
 }
 
 type service struct {

@@ -5,6 +5,16 @@ import (
 	"net/http"
 )
 
+type CustomersServiceInterface interface {
+	Create(ctx context.Context, customer *Customer) (*Customer, *http.Response, error)
+	Get(ctx context.Context, customerID string) (*Customer, *http.Response, error)
+	List(ctx context.Context, opts *ListCustomerParams) (*[]Customer, *http.Response, error)
+	Update(ctx context.Context, customerID string, customer *Customer) (*Customer, *http.Response, error)
+	Delete(ctx context.Context, customerID string, opts *DeleteCustomerParams) (*Customer, *http.Response, error)
+	Batch(ctx context.Context, opts *BatchCustomerUpdate) (*BatchCustomerUpdateResponse, *http.Response, error)
+	GetDownloads(ctx context.Context, customerID string) (*[]CustomerDownload, *http.Response, error)
+}
+
 // Customer service
 type CustomersService service
 
