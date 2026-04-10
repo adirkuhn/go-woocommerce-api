@@ -7,7 +7,7 @@ import (
 )
 
 func TestProductsCreate(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodPost)
 		assertPathSuffix(t, r, "/products")
 		writeJSON(w, &Product{ID: 20, Name: "T-Shirt", Status: "publish"})
@@ -26,7 +26,7 @@ func TestProductsCreate(t *testing.T) {
 }
 
 func TestProductsGet(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodGet)
 		assertPathSuffix(t, r, "/products/20")
 		writeJSON(w, &Product{ID: 20, Sku: "TS-001", StockStatus: "instock"})
@@ -45,7 +45,7 @@ func TestProductsGet(t *testing.T) {
 }
 
 func TestProductsList(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodGet)
 		assertPathSuffix(t, r, "/products")
 		if r.URL.Query().Get("status") != "publish" {
@@ -70,7 +70,7 @@ func TestProductsList(t *testing.T) {
 }
 
 func TestProductsUpdate(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodPut)
 		assertPathSuffix(t, r, "/products/20")
 		writeJSON(w, &Product{ID: 20, RegularPrice: "29.99"})
@@ -86,7 +86,7 @@ func TestProductsUpdate(t *testing.T) {
 }
 
 func TestProductsDelete(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodDelete)
 		assertPathSuffix(t, r, "/products/20")
 		writeJSON(w, &Product{ID: 20})
@@ -102,7 +102,7 @@ func TestProductsDelete(t *testing.T) {
 }
 
 func TestProductsBatch(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodPost)
 		assertPathSuffix(t, r, "/products/batch")
 		ids := []int{21, 22}
@@ -125,7 +125,7 @@ func TestProductsBatch(t *testing.T) {
 }
 
 func TestProductsError(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		writeAPIError(w, http.StatusNotFound, "Product not found")
 	})
 

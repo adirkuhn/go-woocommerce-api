@@ -7,7 +7,7 @@ import (
 )
 
 func TestWebhooksCreate(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodPost)
 		assertPathSuffix(t, r, "/webhooks")
 		writeJSON(w, &Webhook{ID: 1, Topic: "order.created", Status: "active"})
@@ -29,7 +29,7 @@ func TestWebhooksCreate(t *testing.T) {
 }
 
 func TestWebhooksGet(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodGet)
 		assertPathSuffix(t, r, "/webhooks/1")
 		writeJSON(w, &Webhook{ID: 1, Status: "active", DeliveryURL: "https://example.com/webhook"})
@@ -48,7 +48,7 @@ func TestWebhooksGet(t *testing.T) {
 }
 
 func TestWebhooksList(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodGet)
 		assertPathSuffix(t, r, "/webhooks")
 		if r.URL.Query().Get("status") != "active" {
@@ -67,7 +67,7 @@ func TestWebhooksList(t *testing.T) {
 }
 
 func TestWebhooksUpdate(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodPut)
 		assertPathSuffix(t, r, "/webhooks/1")
 		writeJSON(w, &Webhook{ID: 1, Status: "paused"})
@@ -83,7 +83,7 @@ func TestWebhooksUpdate(t *testing.T) {
 }
 
 func TestWebhooksDelete(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodDelete)
 		assertPathSuffix(t, r, "/webhooks/1")
 		writeJSON(w, &Webhook{ID: 1})
@@ -99,7 +99,7 @@ func TestWebhooksDelete(t *testing.T) {
 }
 
 func TestWebhooksBatch(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodPost)
 		assertPathSuffix(t, r, "/webhooks/batch")
 		writeJSON(w, &BatchWebhookUpdateResponse{
@@ -119,7 +119,7 @@ func TestWebhooksBatch(t *testing.T) {
 }
 
 func TestWebhooksError(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		writeAPIError(w, http.StatusUnprocessableEntity, "Invalid topic")
 	})
 

@@ -8,14 +8,16 @@ import (
 type CouponsServiceInterface interface {
 	Create(ctx context.Context, coupon *Coupon) (*Coupon, *http.Response, error)
 	Get(ctx context.Context, couponID string) (*Coupon, *http.Response, error)
-	List(ctx context.Context, opts *ListCouponParams) (*[]Coupon, *http.Response, error)
+	List(ctx context.Context, opts *ListCouponParams) ([]Coupon, *http.Response, error)
 	Update(ctx context.Context, couponID string, coupon *Coupon) (*Coupon, *http.Response, error)
 	Delete(ctx context.Context, couponID string, opts *DeleteCouponParams) (*Coupon, *http.Response, error)
 	Batch(ctx context.Context, opts *BatchCouponUpdate) (*BatchCouponUpdateResponse, *http.Response, error)
 }
 
 // Coupon service
-type CouponsService service
+type CouponsService struct {
+	client HTTPClient
+}
 
 // Coupon object. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#coupon-properties
 type Coupon struct {
@@ -115,7 +117,7 @@ func (service *CouponsService) Get(ctx context.Context, couponID string) (*Coupo
 }
 
 // List coupons. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#list-all-coupons
-func (service *CouponsService) List(ctx context.Context, opts *ListCouponParams) (*[]Coupon, *http.Response, error) {
+func (service *CouponsService) List(ctx context.Context, opts *ListCouponParams) ([]Coupon, *http.Response, error) {
 	req, err := service.client.NewRequest(ctx, "GET", "/coupons", opts, nil)
 	if err != nil {
 		return nil, nil, err
@@ -127,7 +129,7 @@ func (service *CouponsService) List(ctx context.Context, opts *ListCouponParams)
 		return nil, response, err
 	}
 
-	return coupons, response, nil
+	return *coupons, response, nil
 }
 
 // Update a coupon. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#update-a-coupon

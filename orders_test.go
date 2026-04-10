@@ -7,7 +7,7 @@ import (
 )
 
 func TestOrdersCreate(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodPost)
 		assertPathSuffix(t, r, "/orders")
 		writeJSON(w, &Order{ID: 42, Status: "pending"})
@@ -29,7 +29,7 @@ func TestOrdersCreate(t *testing.T) {
 }
 
 func TestOrdersGet(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodGet)
 		assertPathSuffix(t, r, "/orders/42")
 		writeJSON(w, &Order{ID: 42, Status: "processing"})
@@ -45,7 +45,7 @@ func TestOrdersGet(t *testing.T) {
 }
 
 func TestOrdersGet_WithParams(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Query().Get("dp") != "2" {
 			t.Errorf("expected dp=2, got %q", r.URL.Query().Get("dp"))
 		}
@@ -56,7 +56,7 @@ func TestOrdersGet_WithParams(t *testing.T) {
 }
 
 func TestOrdersList(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodGet)
 		assertPathSuffix(t, r, "/orders")
 		if r.URL.Query().Get("customer") != "5" {
@@ -75,7 +75,7 @@ func TestOrdersList(t *testing.T) {
 }
 
 func TestOrdersUpdate(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodPut)
 		assertPathSuffix(t, r, "/orders/42")
 		writeJSON(w, &Order{ID: 42, Status: "completed"})
@@ -91,7 +91,7 @@ func TestOrdersUpdate(t *testing.T) {
 }
 
 func TestOrdersDelete(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodDelete)
 		assertPathSuffix(t, r, "/orders/42")
 		writeJSON(w, &Order{ID: 42})
@@ -107,7 +107,7 @@ func TestOrdersDelete(t *testing.T) {
 }
 
 func TestOrdersBatch(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodPost)
 		assertPathSuffix(t, r, "/orders/batch")
 		writeJSON(w, &BatchOrderUpdateResponse{
@@ -127,7 +127,7 @@ func TestOrdersBatch(t *testing.T) {
 }
 
 func TestOrdersError(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		writeAPIError(w, http.StatusNotFound, "Order not found")
 	})
 

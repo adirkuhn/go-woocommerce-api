@@ -13,7 +13,9 @@ type OrderNotesServiceInterface interface {
 }
 
 // Order Notes service
-type OrderNotesService service
+type OrderNotesService struct {
+	client HTTPClient
+}
 
 // OrderNote object. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#order-note-properties
 type OrderNote struct {

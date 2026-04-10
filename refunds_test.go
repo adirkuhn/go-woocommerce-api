@@ -7,7 +7,7 @@ import (
 )
 
 func TestRefundsCreate(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodPost)
 		assertPathSuffix(t, r, "/orders/10/refunds")
 		writeJSON(w, &Refund{ID: 1, Amount: "15.00", Reason: "Customer request"})
@@ -26,7 +26,7 @@ func TestRefundsCreate(t *testing.T) {
 }
 
 func TestRefundsGet(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodGet)
 		assertPathSuffix(t, r, "/orders/10/refunds/1")
 		writeJSON(w, &Refund{ID: 1, Amount: "15.00"})
@@ -42,7 +42,7 @@ func TestRefundsGet(t *testing.T) {
 }
 
 func TestRefundsList(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodGet)
 		assertPathSuffix(t, r, "/orders/10/refunds")
 		if r.URL.Query().Get("per_page") != "5" {
@@ -61,7 +61,7 @@ func TestRefundsList(t *testing.T) {
 }
 
 func TestRefundsDelete(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodDelete)
 		assertPathSuffix(t, r, "/orders/10/refunds/1")
 		writeJSON(w, &Refund{ID: 1})
@@ -77,7 +77,7 @@ func TestRefundsDelete(t *testing.T) {
 }
 
 func TestRefundsError(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		writeAPIError(w, http.StatusNotFound, "Refund not found")
 	})
 

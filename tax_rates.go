@@ -15,7 +15,9 @@ type TaxRatesServiceInterface interface {
 }
 
 // Tax Rates service
-type TaxRatesService service
+type TaxRatesService struct {
+	client HTTPClient
+}
 
 // TaxRate object. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#tax-rate-properties
 type TaxRate struct {

@@ -13,7 +13,9 @@ type RefundsServiceInterface interface {
 }
 
 // Refunds service
-type RefundsService service
+type RefundsService struct {
+	client HTTPClient
+}
 
 // Refund object. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#order-refund-properties
 type Refund struct {

@@ -7,7 +7,7 @@ import (
 )
 
 func TestTaxRatesCreate(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodPost)
 		assertPathSuffix(t, r, "/taxes")
 		writeJSON(w, &TaxRate{ID: 1, Country: "US", State: "CA", Rate: "8.250", Name: "CA State Tax"})
@@ -34,7 +34,7 @@ func TestTaxRatesCreate(t *testing.T) {
 }
 
 func TestTaxRatesGet(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodGet)
 		assertPathSuffix(t, r, "/taxes/1")
 		writeJSON(w, &TaxRate{ID: 1, Name: "CA State Tax", Class: "standard", Compound: false, Shipping: true})
@@ -53,7 +53,7 @@ func TestTaxRatesGet(t *testing.T) {
 }
 
 func TestTaxRatesList(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodGet)
 		assertPathSuffix(t, r, "/taxes")
 		if r.URL.Query().Get("class") != "standard" {
@@ -78,7 +78,7 @@ func TestTaxRatesList(t *testing.T) {
 }
 
 func TestTaxRatesUpdate(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodPut)
 		assertPathSuffix(t, r, "/taxes/1")
 		writeJSON(w, &TaxRate{ID: 1, Rate: "9.000"})
@@ -94,7 +94,7 @@ func TestTaxRatesUpdate(t *testing.T) {
 }
 
 func TestTaxRatesDelete(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodDelete)
 		assertPathSuffix(t, r, "/taxes/1")
 		if r.URL.Query().Get("force") != "true" {
@@ -113,7 +113,7 @@ func TestTaxRatesDelete(t *testing.T) {
 }
 
 func TestTaxRatesBatch(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodPost)
 		assertPathSuffix(t, r, "/taxes/batch")
 		writeJSON(w, &BatchTaxRateUpdateResponse{
@@ -136,7 +136,7 @@ func TestTaxRatesBatch(t *testing.T) {
 }
 
 func TestTaxRatesError(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		writeAPIError(w, http.StatusNotFound, "Tax rate not found")
 	})
 

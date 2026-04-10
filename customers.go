@@ -8,15 +8,17 @@ import (
 type CustomersServiceInterface interface {
 	Create(ctx context.Context, customer *Customer) (*Customer, *http.Response, error)
 	Get(ctx context.Context, customerID string) (*Customer, *http.Response, error)
-	List(ctx context.Context, opts *ListCustomerParams) (*[]Customer, *http.Response, error)
+	List(ctx context.Context, opts *ListCustomerParams) ([]Customer, *http.Response, error)
 	Update(ctx context.Context, customerID string, customer *Customer) (*Customer, *http.Response, error)
 	Delete(ctx context.Context, customerID string, opts *DeleteCustomerParams) (*Customer, *http.Response, error)
 	Batch(ctx context.Context, opts *BatchCustomerUpdate) (*BatchCustomerUpdateResponse, *http.Response, error)
-	GetDownloads(ctx context.Context, customerID string) (*[]CustomerDownload, *http.Response, error)
+	GetDownloads(ctx context.Context, customerID string) ([]CustomerDownload, *http.Response, error)
 }
 
 // Customer service
-type CustomersService service
+type CustomersService struct {
+	client HTTPClient
+}
 
 // Customer object. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#customer-properties
 type Customer struct {
@@ -122,7 +124,7 @@ func (service *CustomersService) Get(ctx context.Context, customerID string) (*C
 }
 
 // List customers. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#list-all-customers
-func (service *CustomersService) List(ctx context.Context, opts *ListCustomerParams) (*[]Customer, *http.Response, error) {
+func (service *CustomersService) List(ctx context.Context, opts *ListCustomerParams) ([]Customer, *http.Response, error) {
 	req, err := service.client.NewRequest(ctx, "GET", "/customers", opts, nil)
 	if err != nil {
 		return nil, nil, err
@@ -134,7 +136,7 @@ func (service *CustomersService) List(ctx context.Context, opts *ListCustomerPar
 		return nil, response, err
 	}
 
-	return customers, response, nil
+	return *customers, response, nil
 }
 
 // Update a customer. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#update-a-customer
@@ -186,7 +188,7 @@ func (service *CustomersService) Batch(ctx context.Context, opts *BatchCustomerU
 }
 
 // GetDownloads retrieves customer downloads. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#retrieve-customer-downloads
-func (service *CustomersService) GetDownloads(ctx context.Context, customerID string) (*[]CustomerDownload, *http.Response, error) {
+func (service *CustomersService) GetDownloads(ctx context.Context, customerID string) ([]CustomerDownload, *http.Response, error) {
 	req, err := service.client.NewRequest(ctx, "GET", "/customers/"+customerID+"/downloads", nil, nil)
 	if err != nil {
 		return nil, nil, err
@@ -198,5 +200,5 @@ func (service *CustomersService) GetDownloads(ctx context.Context, customerID st
 		return nil, response, err
 	}
 
-	return downloads, response, nil
+	return *downloads, response, nil
 }

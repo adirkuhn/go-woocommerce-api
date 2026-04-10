@@ -15,7 +15,9 @@ type OrdersServiceInterface interface {
 }
 
 // Orders service
-type OrdersService service
+type OrdersService struct {
+	client HTTPClient
+}
 
 // Order object. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#order-properties
 type Order struct {

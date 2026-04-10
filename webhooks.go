@@ -15,7 +15,9 @@ type WebhookServiceInterface interface {
 }
 
 // Webhooks service
-type WebhookService service
+type WebhookService struct {
+	client HTTPClient
+}
 
 type Webhook struct {
 	ID              int      `json:"id,omitempty"`

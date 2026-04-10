@@ -15,7 +15,9 @@ type ProductsServiceInterface interface {
 }
 
 // Product service
-type ProductsService service
+type ProductsService struct {
+	client HTTPClient
+}
 
 // Product object. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#product-properties
 type Product struct {

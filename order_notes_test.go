@@ -7,7 +7,7 @@ import (
 )
 
 func TestOrderNotesCreate(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodPost)
 		assertPathSuffix(t, r, "/orders/5/notes")
 		writeJSON(w, &OrderNote{ID: 1, Note: "Order confirmed"})
@@ -26,7 +26,7 @@ func TestOrderNotesCreate(t *testing.T) {
 }
 
 func TestOrderNotesGet(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodGet)
 		assertPathSuffix(t, r, "/orders/5/notes/1")
 		writeJSON(w, &OrderNote{ID: 1, Author: "system", CustomerNote: true})
@@ -45,7 +45,7 @@ func TestOrderNotesGet(t *testing.T) {
 }
 
 func TestOrderNotesList(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodGet)
 		assertPathSuffix(t, r, "/orders/5/notes")
 		if r.URL.Query().Get("type") != "customer" {
@@ -64,7 +64,7 @@ func TestOrderNotesList(t *testing.T) {
 }
 
 func TestOrderNotesDelete(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		assertMethod(t, r, http.MethodDelete)
 		assertPathSuffix(t, r, "/orders/5/notes/1")
 		writeJSON(w, &OrderNote{ID: 1})
@@ -80,7 +80,7 @@ func TestOrderNotesDelete(t *testing.T) {
 }
 
 func TestOrderNotesError(t *testing.T) {
-	client := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		writeAPIError(w, http.StatusNotFound, "Note not found")
 	})
 
