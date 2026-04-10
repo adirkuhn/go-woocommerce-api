@@ -8,7 +8,7 @@ import (
 type RefundsServiceInterface interface {
 	Create(ctx context.Context, orderID string, refund *Refund) (*Refund, *http.Response, error)
 	Get(ctx context.Context, orderID string, refundID string) (*Refund, *http.Response, error)
-	List(ctx context.Context, orderID string, opts *ListRefundParams) (*[]Refund, *http.Response, error)
+	List(ctx context.Context, orderID string, opts *ListRefundParams) ([]Refund, *http.Response, error)
 	Delete(ctx context.Context, orderID string, refundID string, opts *DeleteRefundParams) (*Refund, *http.Response, error)
 }
 
@@ -110,7 +110,7 @@ func (service *RefundsService) Get(ctx context.Context, orderID string, refundID
 }
 
 // List refunds. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#list-all-refunds
-func (service *RefundsService) List(ctx context.Context, orderID string, opts *ListRefundParams) (*[]Refund, *http.Response, error) {
+func (service *RefundsService) List(ctx context.Context, orderID string, opts *ListRefundParams) ([]Refund, *http.Response, error) {
 	req, err := service.client.NewRequest(ctx, "GET", "/orders/"+orderID+"/refunds", opts, nil)
 	if err != nil {
 		return nil, nil, err
@@ -122,7 +122,7 @@ func (service *RefundsService) List(ctx context.Context, orderID string, opts *L
 		return nil, response, err
 	}
 
-	return refunds, response, nil
+	return *refunds, response, nil
 }
 
 // Delete a refund. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#delete-a-refund

@@ -8,7 +8,7 @@ import (
 type ProductsServiceInterface interface {
 	Create(ctx context.Context, product *Product) (*Product, *http.Response, error)
 	Get(ctx context.Context, productID string) (*Product, *http.Response, error)
-	List(ctx context.Context, opts *ListProductParams) (*[]Product, *http.Response, error)
+	List(ctx context.Context, opts *ListProductParams) ([]Product, *http.Response, error)
 	Update(ctx context.Context, productID string, product *Product) (*Product, *http.Response, error)
 	Delete(ctx context.Context, productID string, opts *DeleteProductParams) (*Product, *http.Response, error)
 	Batch(ctx context.Context, opts *BatchProductUpdate) (*BatchProductUpdateResponse, *http.Response, error)
@@ -222,7 +222,7 @@ func (service *ProductsService) Get(ctx context.Context, productID string) (*Pro
 }
 
 // List products. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#list-all-products
-func (service *ProductsService) List(ctx context.Context, opts *ListProductParams) (*[]Product, *http.Response, error) {
+func (service *ProductsService) List(ctx context.Context, opts *ListProductParams) ([]Product, *http.Response, error) {
 	req, err := service.client.NewRequest(ctx, "GET", "/products", opts, nil)
 	if err != nil {
 		return nil, nil, err
@@ -234,7 +234,7 @@ func (service *ProductsService) List(ctx context.Context, opts *ListProductParam
 		return nil, response, err
 	}
 
-	return products, response, nil
+	return *products, response, nil
 }
 
 // Update a product. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#update-a-product

@@ -61,8 +61,8 @@ func TestWebhooksList(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if len(*webhooks) != 2 {
-		t.Errorf("len: got %d, want 2", len(*webhooks))
+	if len(webhooks) != 2 {
+		t.Errorf("len: got %d, want 2", len(webhooks))
 	}
 }
 

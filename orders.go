@@ -8,7 +8,7 @@ import (
 type OrdersServiceInterface interface {
 	Create(ctx context.Context, order *Order) (*Order, *http.Response, error)
 	Get(ctx context.Context, orderID string, opts *GetOrderParams) (*Order, *http.Response, error)
-	List(ctx context.Context, opts *ListOrdersParams) (*[]Order, *http.Response, error)
+	List(ctx context.Context, opts *ListOrdersParams) ([]Order, *http.Response, error)
 	Update(ctx context.Context, orderID string, order *Order) (*Order, *http.Response, error)
 	Delete(ctx context.Context, orderID string, opts *DeleteOrderParams) (*Order, *http.Response, error)
 	Batch(ctx context.Context, opts *BatchOrderUpdate) (*BatchOrderUpdateResponse, *http.Response, error)
@@ -224,7 +224,7 @@ func (service *OrdersService) Get(ctx context.Context, orderID string, opts *Get
 }
 
 // List orders. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#list-all-orders
-func (service *OrdersService) List(ctx context.Context, opts *ListOrdersParams) (*[]Order, *http.Response, error) {
+func (service *OrdersService) List(ctx context.Context, opts *ListOrdersParams) ([]Order, *http.Response, error) {
 	req, err := service.client.NewRequest(ctx, "GET", "/orders", opts, nil)
 	if err != nil {
 		return nil, nil, err
@@ -236,7 +236,7 @@ func (service *OrdersService) List(ctx context.Context, opts *ListOrdersParams) 
 		return nil, response, err
 	}
 
-	return orders, response, nil
+	return *orders, response, nil
 }
 
 // Update an order. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#update-an-order

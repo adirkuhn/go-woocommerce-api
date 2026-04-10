@@ -8,7 +8,7 @@ import (
 type OrderNotesServiceInterface interface {
 	Create(ctx context.Context, orderID string, orderNote *OrderNote) (*OrderNote, *http.Response, error)
 	Get(ctx context.Context, orderID string, noteID string) (*OrderNote, *http.Response, error)
-	List(ctx context.Context, orderID string, opts *ListOrderNotesParams) (*[]OrderNote, *http.Response, error)
+	List(ctx context.Context, orderID string, opts *ListOrderNotesParams) ([]OrderNote, *http.Response, error)
 	Delete(ctx context.Context, orderID string, noteID string, opts *DeleteOrderNoteParams) (*OrderNote, *http.Response, error)
 }
 
@@ -70,7 +70,7 @@ func (service *OrderNotesService) Get(ctx context.Context, orderID string, noteI
 }
 
 // List order notes. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#list-all-order-notes
-func (service *OrderNotesService) List(ctx context.Context, orderID string, opts *ListOrderNotesParams) (*[]OrderNote, *http.Response, error) {
+func (service *OrderNotesService) List(ctx context.Context, orderID string, opts *ListOrderNotesParams) ([]OrderNote, *http.Response, error) {
 	req, err := service.client.NewRequest(ctx, "GET", "/orders/"+orderID+"/notes", opts, nil)
 	if err != nil {
 		return nil, nil, err
@@ -82,7 +82,7 @@ func (service *OrderNotesService) List(ctx context.Context, orderID string, opts
 		return nil, response, err
 	}
 
-	return notes, response, nil
+	return *notes, response, nil
 }
 
 // Delete an order note. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#delete-an-order-note

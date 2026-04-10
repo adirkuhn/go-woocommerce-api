@@ -8,7 +8,7 @@ import (
 type WebhookServiceInterface interface {
 	Create(ctx context.Context, webhook *Webhook) (*Webhook, *http.Response, error)
 	Get(ctx context.Context, webhookID string) (*Webhook, *http.Response, error)
-	List(ctx context.Context, opts *ListWebhooksParams) (*[]Webhook, *http.Response, error)
+	List(ctx context.Context, opts *ListWebhooksParams) ([]Webhook, *http.Response, error)
 	Update(ctx context.Context, webhookID string, webhook *Webhook) (*Webhook, *http.Response, error)
 	Delete(ctx context.Context, webhookID string, opts *DeleteWebhookParams) (*Webhook, *http.Response, error)
 	Batch(ctx context.Context, opts *BatchWebhookUpdate) (*BatchWebhookUpdateResponse, *http.Response, error)
@@ -98,7 +98,7 @@ func (service *WebhookService) Get(ctx context.Context, webhookID string) (*Webh
 }
 
 // List webhooks. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#list-all-webhooks
-func (service *WebhookService) List(ctx context.Context, opts *ListWebhooksParams) (*[]Webhook, *http.Response, error) {
+func (service *WebhookService) List(ctx context.Context, opts *ListWebhooksParams) ([]Webhook, *http.Response, error) {
 	req, err := service.client.NewRequest(ctx, "GET", "/webhooks", opts, nil)
 	if err != nil {
 		return nil, nil, err
@@ -110,7 +110,7 @@ func (service *WebhookService) List(ctx context.Context, opts *ListWebhooksParam
 		return nil, response, err
 	}
 
-	return webhooks, response, nil
+	return *webhooks, response, nil
 }
 
 // Update a webhook. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#update-a-webhook

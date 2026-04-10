@@ -69,8 +69,8 @@ func TestOrdersList(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if len(*orders) != 2 {
-		t.Errorf("len: got %d, want 2", len(*orders))
+	if len(orders) != 2 {
+		t.Errorf("len: got %d, want 2", len(orders))
 	}
 }
 

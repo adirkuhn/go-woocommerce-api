@@ -64,8 +64,8 @@ func TestProductsList(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if len(*products) != 3 {
-		t.Errorf("len: got %d, want 3", len(*products))
+	if len(products) != 3 {
+		t.Errorf("len: got %d, want 3", len(products))
 	}
 }
 

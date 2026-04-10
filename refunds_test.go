@@ -55,8 +55,8 @@ func TestRefundsList(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if len(*refunds) != 2 {
-		t.Errorf("len: got %d, want 2", len(*refunds))
+	if len(refunds) != 2 {
+		t.Errorf("len: got %d, want 2", len(refunds))
 	}
 }
 
