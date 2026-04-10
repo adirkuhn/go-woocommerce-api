@@ -1,83 +1,146 @@
 # go-woocommerce-api
-A Woocommerce API Golang Wrapper for the [Woocommerce Rest API (v3)](https://woocommerce.github.io/woocommerce-rest-api-docs/)
 
-# Install
+A Go client library for the [WooCommerce REST API v3](https://woocommerce.github.io/woocommerce-rest-api-docs/).
 
-```console
-$ go get github.com/adirkuhn/go-woocommerce-api
-```
-
-# Tests
+## Install
 
 ```console
-$ go test ./...
+go get github.com/adirkuhn/go-woocommerce-api
 ```
 
-# Usage
+Requires Go 1.18+.
 
-Create a new API client and authenticate with your REST API keys. You should specify the URL protocol by prefixing your domain name with `https://` or `http://`. Follow the [Woocommerce documentation](https://woocommerce.github.io/woocommerce-rest-api-docs/#authentication) to create your API keys through the [Wordpress admin interface](https://woocommerce.github.io/woocommerce-rest-api-docs/#generating-api-keys-in-the-wordpress-admin-interface) or using the [authentication endpoint](https://woocommerce.github.io/woocommerce-rest-api-docs/#creating-an-authentication-endpoint-url). 
+## Usage
+
+Create a client by passing a `Config` struct to `New`. The `ConsumerKey` and `ConsumerSecret` are your WooCommerce REST API credentials — see the [WooCommerce authentication docs](https://woocommerce.github.io/woocommerce-rest-api-docs/#authentication) for how to generate them.
 
 ```go
 import (
-  "github.com/adirkuhn/go-woocommerce-api"
+    "context"
+
+    woocommerce "github.com/adirkuhn/go-woocommerce-api"
 )
 
-func main(){
-  shopURL := "https://example.com"
-  key := "ck_xxxxxxx"
-  secret := "cs_xxxxxxx"
+func main() {
+    woo, err := woocommerce.New(woocommerce.Config{
+        ShopURL:        "https://example.com",
+        ConsumerKey:    "ck_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        ConsumerSecret: "cs_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    })
+    if err != nil {
+        // handle error
+        return
+    }
 
-  client, err := woocommerce.New(shopURL)
+    ctx := context.Background()
 
-  if err != nil {
-    // handle error
+    // List orders for a specific customer
+    orders, resp, err := woo.Orders.List(ctx, &woocommerce.ListOrdersParams{
+        Customer: 3,
+        Page:     1,
+    })
+    if err != nil {
+        // handle error
+        return
+    }
 
-    return
-  }
-
-  client.Authenticate(key, secret)
+    // Pagination is exposed via response headers
+    totalPages := resp.Header.Get("X-Wp-Totalpages")
+    totalItems := resp.Header.Get("X-Wp-Total")
+    _ = orders
+    _ = totalPages
+    _ = totalItems
 }
-
 ```
 
-The API routes are broken down into services, the supported services are: 
-* Coupons `(Create, Get, List, Update, Delete, Batch)`
-* Customers `(Create, Get, List, Update, Delete, Batch, GetDownloads)`
-* Orders `(Create, Get, List, Update, Delete, Batch)`
-* OrderNotes `(Create, Get, List, Delete)`
-* Refunds `(Create, Get, List, Delete)`
-* Products `(Create, Get, List, Update, Delete, Batch)`
-* Webhooks `(Create, Get, List, Update, Delete, Batch)`
-* TaxRates `(Create, Get, List, Update, Delete, Batch)`
+### Config options
 
-List Orders by customer ID and page number.
+| Field            | Type            | Default | Description                                  |
+|------------------|-----------------|---------|----------------------------------------------|
+| `ShopURL`        | `string`        | —       | Required. Base URL of the WooCommerce store. |
+| `ConsumerKey`    | `string`        | —       | Required. WooCommerce REST API consumer key. |
+| `ConsumerSecret` | `string`        | —       | Required. WooCommerce REST API consumer secret. |
+| `Version`        | `string`        | `"v3"`  | API version path segment.                    |
+| `HTTPClient`     | `*http.Client`  | 10s timeout | Custom HTTP client.                     |
+
+## Supported services
+
+All services are exposed as fields on the `*WooCommerce` value returned by `New`.
+
+| Service      | Methods                                             |
+|--------------|-----------------------------------------------------|
+| `Orders`     | `Create`, `Get`, `List`, `Update`, `Delete`, `Batch` |
+| `OrderNotes` | `Create`, `Get`, `List`, `Delete`                   |
+| `Refunds`    | `Create`, `Get`, `List`, `Delete`                   |
+| `Customers`  | `Create`, `Get`, `List`, `Update`, `Delete`, `Batch`, `GetDownloads` |
+| `Products`   | `Create`, `Get`, `List`, `Update`, `Delete`, `Batch` |
+| `Coupons`    | `Create`, `Get`, `List`, `Update`, `Delete`, `Batch` |
+| `TaxRates`   | `Create`, `Get`, `List`, `Update`, `Delete`, `Batch` |
+| `Webhooks`   | `Create`, `Get`, `List`, `Update`, `Delete`, `Batch` |
+
+Every method returns `(Resource, *http.Response, error)`. The raw `*http.Response` is always passed back so callers can read WooCommerce pagination headers (`X-Wp-Total`, `X-Wp-Totalpages`).
+
+## Examples
+
+### Create a product
 
 ```go
-func (client *woocommerce.Client) listOrders() {
-  customerID := 3
-  pageNumber := 1
-  
-  opts := woocommerce.ListOrdersParams{
-    Customer: customerID,
-    Page: pageNumber,
-  }
-
-  ctx := context.Background()
-  orders, resp, err := client.Orders.List(ctx, opts)
-
-  if err != nil {
-    // Handle errors
-
-    return
-  }
-
-  // Pagination headers.
-  totalPages := resp.Header.Get("X-Wp-Totalpages")
-  totalItems := resp.Header.Get("X-Wp-Total")
-
-  // ....
-
-}
-
+product, _, err := woo.Products.Create(ctx, &woocommerce.Product{
+    Name:          "My Product",
+    Type:          "simple",
+    RegularPrice:  "9.99",
+    Status:        "publish",
+})
 ```
 
+### Get a customer
+
+```go
+customer, _, err := woo.Customers.Get(ctx, "42")
+```
+
+### Batch update orders
+
+```go
+result, _, err := woo.Orders.Batch(ctx, &woocommerce.BatchOrderUpdate{
+    Update: &[]woocommerce.Order{
+        {ID: 101, Status: "completed"},
+        {ID: 102, Status: "completed"},
+    },
+})
+```
+
+## Testing
+
+Each service is backed by an interface (`OrdersServiceInterface`, `ProductsServiceInterface`, etc.), making it straightforward to substitute a mock in your own tests.
+
+For injecting a custom transport without going through `New`, use `NewWithHTTPClient`:
+
+```go
+woo := woocommerce.NewWithHTTPClient(myMockHTTPClient)
+```
+
+### Running the library's own tests
+
+```console
+go test ./...
+```
+
+## Error handling
+
+API errors are returned as `*ErrorResponse`, which carries the HTTP status code, WooCommerce error code, and message:
+
+```go
+orders, _, err := woo.Orders.List(ctx, nil)
+if err != nil {
+    if apiErr, ok := err.(*woocommerce.ErrorResponse); ok {
+        fmt.Println(apiErr.Code, apiErr.Message, apiErr.Data.Status)
+    }
+}
+```
+
+The client automatically retries once on 5xx responses and transient transport errors before returning an error to the caller.
+
+## License
+
+See [LICENSE](LICENSE).
