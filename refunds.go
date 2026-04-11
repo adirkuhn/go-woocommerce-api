@@ -37,13 +37,13 @@ type RefundLineItem struct {
 	ProductID   int          `json:"product_id,omitempty"`
 	VariationID int          `json:"variation_id,omitempty"`
 	Quantity    int          `json:"quantity,omitempty"`
-	TaxClass    int          `json:"tax_class,omitempty"`
+	TaxClass    string       `json:"tax_class,omitempty"`
 	Subtotal    string       `json:"subtotal,omitempty"`
 	SubtotalTax string       `json:"subtotal_tax,omitempty"`
 	Total       string       `json:"total,omitempty"`
 	TotalTax    string       `json:"total_tax,omitempty"`
 	Sku         string       `json:"sku,omitempty"`
-	Price       string       `json:"price,omitempty"`
+	Price       float64      `json:"price,omitempty"`
 	RefundTotal float64      `json:"refund_total,omitempty"`
 	Taxes       *[]RefundTax `json:"taxes,omitempty"`
 	MetaData    *[]MetaData  `json:"meta_data,omitempty"`
@@ -61,13 +61,14 @@ type ListRefundParams struct {
 	Page          int    `url:"page,omitempty"`
 	PerPage       int    `url:"per_page,omitempty"`
 	Search        string `url:"search,omitempty"`
+	After         string `url:"after,omitempty"`
+	Before        string `url:"before,omitempty"`
+	DatesAreGmt   bool   `url:"dates_are_gmt,omitempty"`
 	Exclude       *[]int `url:"exclude,omitempty"`
 	Include       *[]int `url:"include,omitempty"`
 	Offset        int    `url:"offset,omitempty"`
 	Order         string `url:"order,omitempty"`
 	OrderBy       string `url:"orderby,omitempty"`
-	After         string `url:"after,omitempty"`
-	Before        string `url:"before,omitempty"`
 	Parent        *[]int `url:"parent,omitempty"`
 	ParentExclude *[]int `url:"parent_exclude,omitempty"`
 	Dp            int    `url:"dp,omitempty"`

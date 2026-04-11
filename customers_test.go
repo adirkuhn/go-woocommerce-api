@@ -2,9 +2,22 @@ package woocommerce
 
 import (
 	"context"
+	_ "embed"
+	"encoding/json"
 	"net/http"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 )
+
+//go:embed test_data/customers.json
+var customersJSON []byte
+
+var customerIgnoreOpts = []cmp.Option{
+	// ignore unstable / API-generated fields
+	cmpopts.IgnoreFields(Customer{}),
+}
 
 func TestCustomersCreate(t *testing.T) {
 	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
@@ -145,4 +158,47 @@ func TestCustomersError(t *testing.T) {
 	if _, ok := err.(*ErrorResponse); !ok {
 		t.Errorf("expected *ErrorResponse, got %T", err)
 	}
+}
+
+func TestCustomersList_RealJSON(t *testing.T) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
+		assertMethod(t, r, http.MethodGet)
+		assertPathSuffix(t, r, "/customers")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(string(customersJSON)))
+	})
+
+	customers, _, err := client.Customers.List(context.Background(), &ListCustomerParams{})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(customers) != 2 {
+		t.Fatalf("len: got %d, want 2", len(customers))
+	}
+
+	wantCustomers := loadCustomersFixture(t)
+
+	for i := range customers {
+		assertCustomer(t, &customers[i], &wantCustomers[i])
+	}
+}
+
+func assertCustomer(t *testing.T, got *Customer, want *Customer) {
+	t.Helper()
+
+	if diff := cmp.Diff(want, got, customerIgnoreOpts...); diff != "" {
+		t.Fatalf("customer mismatch (-want +got):\n%s", diff)
+	}
+}
+
+func loadCustomersFixture(t *testing.T) []Customer {
+	t.Helper()
+
+	var customers []Customer
+	if err := json.Unmarshal(customersJSON, &customers); err != nil {
+		t.Fatalf("invalid fixture: %v", err)
+	}
+
+	return customers
 }

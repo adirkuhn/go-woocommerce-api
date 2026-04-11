@@ -2,9 +2,22 @@ package woocommerce
 
 import (
 	"context"
+	_ "embed"
+	"encoding/json"
 	"net/http"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 )
+
+//go:embed test_data/refunds.json
+var taxRatesJSON []byte
+
+var taxRatesIgnoreOpts = []cmp.Option{
+	// ignore unstable / API-generated fields
+	cmpopts.IgnoreFields(TaxRate{}),
+}
 
 func TestTaxRatesCreate(t *testing.T) {
 	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
@@ -149,4 +162,47 @@ func TestTaxRatesError(t *testing.T) {
 	} else if apiErr.Data.Status != http.StatusNotFound {
 		t.Errorf("status: got %d, want 404", apiErr.Data.Status)
 	}
+}
+
+func TestTaxRatesList_RealJSON(t *testing.T) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
+		assertMethod(t, r, http.MethodGet)
+		assertPathSuffix(t, r, "/taxes")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(string(taxRatesJSON)))
+	})
+
+	taxRates, _, err := client.TaxRates.List(context.Background(), &ListTaxRatesParams{})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(taxRates) != 2 {
+		t.Fatalf("len: got %d, want 2", len(taxRates))
+	}
+
+	wantTaxRates := loadTaxRatesFixture(t)
+
+	for i := range taxRates {
+		assertTaxRate(t, &taxRates[i], &wantTaxRates[i])
+	}
+}
+
+func assertTaxRate(t *testing.T, got *TaxRate, want *TaxRate) {
+	t.Helper()
+
+	if diff := cmp.Diff(want, got, taxRatesIgnoreOpts...); diff != "" {
+		t.Fatalf("tax rate mismatch (-want +got):\n%s", diff)
+	}
+}
+
+func loadTaxRatesFixture(t *testing.T) []TaxRate {
+	t.Helper()
+
+	var taxRates []TaxRate
+	if err := json.Unmarshal(taxRatesJSON, &taxRates); err != nil {
+		t.Fatalf("invalid fixture: %v", err)
+	}
+
+	return taxRates
 }

@@ -2,9 +2,22 @@ package woocommerce
 
 import (
 	"context"
+	_ "embed"
+	"encoding/json"
 	"net/http"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 )
+
+//go:embed test_data/orders.json
+var ordersJSON []byte
+
+var orderIgnoreOpts = []cmp.Option{
+	// ignore unstable / API-generated fields
+	cmpopts.IgnoreFields(Order{}),
+}
 
 func TestOrdersCreate(t *testing.T) {
 	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
@@ -140,4 +153,47 @@ func TestOrdersError(t *testing.T) {
 	} else if apiErr.Data.Status != http.StatusNotFound {
 		t.Errorf("status: got %d, want 404", apiErr.Data.Status)
 	}
+}
+
+func TestOrderList_RealJSON(t *testing.T) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
+		assertMethod(t, r, http.MethodGet)
+		assertPathSuffix(t, r, "/orders")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(string(ordersJSON)))
+	})
+
+	orders, _, err := client.Orders.List(context.Background(), &ListOrdersParams{})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(orders) != 2 {
+		t.Fatalf("len: got %d, want 2", len(orders))
+	}
+
+	wantOrders := loadOrdersFixture(t)
+
+	for i := range orders {
+		assertOrder(t, &orders[i], &wantOrders[i])
+	}
+}
+
+func assertOrder(t *testing.T, got *Order, want *Order) {
+	t.Helper()
+
+	if diff := cmp.Diff(want, got, orderIgnoreOpts...); diff != "" {
+		t.Fatalf("order mismatch (-want +got):\n%s", diff)
+	}
+}
+
+func loadOrdersFixture(t *testing.T) []Order {
+	t.Helper()
+
+	var orders []Order
+	if err := json.Unmarshal(ordersJSON, &orders); err != nil {
+		t.Fatalf("invalid fixture: %v", err)
+	}
+
+	return orders
 }

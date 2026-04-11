@@ -2,9 +2,22 @@ package woocommerce
 
 import (
 	"context"
+	_ "embed"
+	"encoding/json"
 	"net/http"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 )
+
+//go:embed test_data/order_notes.json
+var orderNotesJSON []byte
+
+var orderNoteIgnoreOpts = []cmp.Option{
+	// ignore unstable / API-generated fields
+	cmpopts.IgnoreFields(OrderNote{}),
+}
 
 func TestOrderNotesCreate(t *testing.T) {
 	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
@@ -91,4 +104,47 @@ func TestOrderNotesError(t *testing.T) {
 	if _, ok := err.(*ErrorResponse); !ok {
 		t.Errorf("expected *ErrorResponse, got %T", err)
 	}
+}
+
+func TestOrderNotesList_RealJSON(t *testing.T) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
+		assertMethod(t, r, http.MethodGet)
+		assertPathSuffix(t, r, "/orders/723/notes")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(string(orderNotesJSON)))
+	})
+
+	notes, _, err := client.OrderNotes.List(context.Background(), "723", &ListOrderNotesParams{})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(notes) != 3 {
+		t.Fatalf("len: got %d, want 3", len(notes))
+	}
+
+	wantNotes := loadOrderNotesFixture(t)
+
+	for i := range notes {
+		assertOrderNote(t, &notes[i], &wantNotes[i])
+	}
+}
+
+func assertOrderNote(t *testing.T, got *OrderNote, want *OrderNote) {
+	t.Helper()
+
+	if diff := cmp.Diff(want, got, orderNoteIgnoreOpts...); diff != "" {
+		t.Fatalf("order note mismatch (-want +got):\n%s", diff)
+	}
+}
+
+func loadOrderNotesFixture(t *testing.T) []OrderNote {
+	t.Helper()
+
+	var notes []OrderNote
+	if err := json.Unmarshal(orderNotesJSON, &notes); err != nil {
+		t.Fatalf("invalid fixture: %v", err)
+	}
+
+	return notes
 }
