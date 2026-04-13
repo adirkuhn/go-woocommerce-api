@@ -120,20 +120,47 @@ func TestProductsBatch(t *testing.T) {
 		assertPathSuffix(t, r, "/products/batch")
 		ids := []int{21, 22}
 		writeJSON(w, &BatchProductUpdateResponse{
-			Delete: &[]Product{{ID: 21}, {ID: 22}},
+			Delete: []Product{{ID: 21}, {ID: 22}},
 		})
 		_ = ids
 	})
 
 	ids := []int{21, 22}
 	result, _, err := client.Products.Batch(context.Background(), &BatchProductUpdate{
-		Delete: &ids,
+		Delete: ids,
 	})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if len(*result.Delete) != 2 {
-		t.Errorf("delete len: got %d, want 2", len(*result.Delete))
+	if len(result.Delete) != 2 {
+		t.Errorf("delete len: got %d, want 2", len(result.Delete))
+	}
+}
+
+func TestFilterParams(t *testing.T) {
+	filter := &ListProductParams{
+		After:   "2022-01-01T00:00:00Z",
+		PerPage: 20,
+	}
+
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
+		assertMethod(t, r, http.MethodGet)
+		assertPathSuffix(t, r, "/products")
+		if r.URL.Query().Get("after") != "2022-01-01T00:00:00Z" {
+			t.Errorf("expected after=2022-01-01T00:00:00Z, got %q", r.URL.Query().Get("after"))
+		}
+		if r.URL.Query().Get("per_page") != "20" {
+			t.Errorf("expected per_page=20, got %q", r.URL.Query().Get("per_page"))
+		}
+		writeJSON(w, &[]Product{{ID: 1}, {ID: 2}, {ID: 3}})
+	})
+
+	products, _, err := client.Products.List(context.Background(), filter)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(products) != 3 {
+		t.Errorf("len: got %d, want 3", len(products))
 	}
 }
 

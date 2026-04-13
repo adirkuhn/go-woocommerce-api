@@ -140,37 +140,38 @@ type DefaultAttributes struct {
 }
 
 type ListProductParams struct {
-	Context        string `url:"context,omitempty"`
-	Page           int    `url:"page,omitempty"`
-	PerPage        int    `url:"per_page,omitempty"`
-	Search         string `url:"search,omitempty"`
-	Exclude        *[]int `url:"exclude,omitempty"`
-	Include        *[]int `url:"include,omitempty"`
-	Offset         int    `url:"offset,omitempty"`
-	Order          string `url:"order,omitempty"`
-	OrderBy        string `url:"orderby,omitempty"`
-	After          string `url:"after,omitempty"`
-	Before         string `url:"before,omitempty"`
-	ModifiedAfter  string `url:"modified_after,omitempty"`
-	ModifiedBefore string `url:"modified_before,omitempty"`
-	DatesAreGmt    bool   `url:"dates_are_gmt,omitempty"`
-	Slug           string `url:"slug,omitempty"`
-	Status         string `url:"status,omitempty"`
-	Type           string `url:"type,omitempty"`
-	Sku            string `url:"sku,omitempty"`
-	Featured       bool   `url:"featured,omitempty"`
-	Category       string `url:"category,omitempty"`
-	Tag            string `url:"tag,omitempty"`
-	ShippingClass  string `url:"shipping_class,omitempty"`
-	Attribute      string `url:"attribute,omitempty"`
-	AttributeTerm  string `url:"attribute_term,omitempty"`
-	TaxClass       string `url:"tax_class,omitempty"`
-	OnSale         bool   `url:"on_sale,omitempty"`
-	MinPrice       string `url:"min_price,omitempty"`
-	MaxPrice       string `url:"max_price,omitempty"`
-	StockStatus    string `url:"stock_status,omitempty"`
-	Parent         *[]int `url:"parent,omitempty"`
-	ParentExclude  *[]int `url:"parent_exclude,omitempty"`
+	Context        string   `url:"context,omitempty"`
+	Page           int      `url:"page,omitempty"`
+	PerPage        int      `url:"per_page,omitempty"`
+	Search         string   `url:"search,omitempty"`
+	Exclude        []int    `url:"exclude,omitempty"`
+	Include        []int    `url:"include,omitempty"`
+	Offset         int      `url:"offset,omitempty"`
+	Order          string   `url:"order,omitempty"`
+	OrderBy        string   `url:"orderby,omitempty"`
+	After          string   `url:"after,omitempty"`
+	Before         string   `url:"before,omitempty"`
+	ModifiedAfter  string   `url:"modified_after,omitempty"`
+	ModifiedBefore string   `url:"modified_before,omitempty"`
+	DatesAreGmt    bool     `url:"dates_are_gmt,omitempty"`
+	Slug           string   `url:"slug,omitempty"`
+	Status         string   `url:"status,omitempty"`
+	Type           string   `url:"type,omitempty"`
+	Sku            string   `url:"sku,omitempty"`
+	Featured       bool     `url:"featured,omitempty"`
+	Category       string   `url:"category,omitempty"`
+	Tag            string   `url:"tag,omitempty"`
+	ShippingClass  string   `url:"shipping_class,omitempty"`
+	Attribute      string   `url:"attribute,omitempty"`
+	AttributeTerm  string   `url:"attribute_term,omitempty"`
+	TaxClass       string   `url:"tax_class,omitempty"`
+	OnSale         bool     `url:"on_sale,omitempty"`
+	MinPrice       string   `url:"min_price,omitempty"`
+	MaxPrice       string   `url:"max_price,omitempty"`
+	StockStatus    string   `url:"stock_status,omitempty"`
+	Parent         []int    `url:"parent,omitempty"`
+	ParentExclude  []int    `url:"parent_exclude,omitempty"`
+	Fields         []string `url:"_fields,omitempty"`
 }
 
 type DeleteProductParams struct {
@@ -178,15 +179,15 @@ type DeleteProductParams struct {
 }
 
 type BatchProductUpdate struct {
-	Create *[]Product `json:"create,omitempty"`
-	Update *[]Product `json:"update,omitempty"`
-	Delete *[]int     `json:"delete,omitempty"`
+	Create []Product `json:"create,omitempty"`
+	Update []Product `json:"update,omitempty"`
+	Delete []int     `json:"delete,omitempty"`
 }
 
 type BatchProductUpdateResponse struct {
-	Create *[]Product `json:"create,omitempty"`
-	Update *[]Product `json:"update,omitempty"`
-	Delete *[]Product `json:"delete,omitempty"`
+	Create []Product `json:"create,omitempty"`
+	Update []Product `json:"update,omitempty"`
+	Delete []Product `json:"delete,omitempty"`
 }
 
 // Create a product. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#create-a-product

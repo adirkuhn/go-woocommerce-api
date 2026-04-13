@@ -23,3 +23,4 @@ vendor/
 # AI
 CLAUDE.md
 .claude/
+.aider*
