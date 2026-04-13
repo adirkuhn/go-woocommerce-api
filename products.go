@@ -171,7 +171,7 @@ type ListProductParams struct {
 	StockStatus    string   `url:"stock_status,omitempty"`
 	Parent         []int    `url:"parent,omitempty"`
 	ParentExclude  []int    `url:"parent_exclude,omitempty"`
-	Fields         []string `url:"_fields,omitempty"`
+	Fields         []string `url:"_fields,omitempty,comma"`
 }
 
 type DeleteProductParams struct {

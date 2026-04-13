@@ -164,6 +164,29 @@ func TestFilterParams(t *testing.T) {
 	}
 }
 
+func TestFilterParamsWithFields(t *testing.T) {
+	filter := &ListProductParams{
+		Fields: []string{"id", "name"},
+	}
+
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
+		assertMethod(t, r, http.MethodGet)
+		assertPathSuffix(t, r, "/products")
+		if r.URL.Query().Get("_fields") != "id,name" {
+			t.Errorf("expected _fields=id,name, got %q", r.URL.Query().Get("_fields"))
+		}
+		writeJSON(w, &[]Product{{ID: 1}, {ID: 2}, {ID: 3}})
+	})
+
+	products, _, err := client.Products.List(context.Background(), filter)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(products) != 3 {
+		t.Errorf("len: got %d, want 3", len(products))
+	}
+}
+
 func TestProductsError(t *testing.T) {
 	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
 		writeAPIError(w, http.StatusNotFound, "Product not found")
