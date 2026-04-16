@@ -110,18 +110,18 @@ func TestCouponsBatch(t *testing.T) {
 		assertMethod(t, r, http.MethodPost)
 		assertPathSuffix(t, r, "/coupons/batch")
 		writeJSON(w, &BatchCouponUpdateResponse{
-			Create: &[]Coupon{{ID: 5}},
+			Create: []Coupon{{ID: 5}},
 		})
 	})
 
 	result, _, err := woo.Coupons.Batch(context.Background(), &BatchCouponUpdate{
-		Create: &[]Coupon{{Code: "NEW"}},
+		Create: []Coupon{{Code: "NEW"}},
 	})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if len(*result.Create) != 1 {
-		t.Errorf("create len: got %d, want 1", len(*result.Create))
+	if len(result.Create) != 1 {
+		t.Errorf("create len: got %d, want 1", len(result.Create))
 	}
 }
 

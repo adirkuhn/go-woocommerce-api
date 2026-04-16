@@ -19,34 +19,34 @@ type RefundsService struct {
 
 // Refund object. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#order-refund-properties
 type Refund struct {
-	ID              int               `json:"id,omitempty"`
-	DateCreated     string            `json:"date_created,omitempty"`
-	DateCreatedGmt  string            `json:"date_created_gmt,omitempty"`
-	Amount          string            `json:"amount,omitempty"`
-	Reason          string            `json:"reason,omitempty"`
-	RefundedBy      int               `json:"refunded_by,omitempty"`
-	RefundedPayment bool              `json:"refunded_payment,omitempty"`
-	ApiRefund       bool              `json:"api_refund,omitempty"`
-	MetaData        *[]MetaData       `json:"meta_data,omitempty"`
-	LineItems       *[]RefundLineItem `json:"line_items,omitempty"`
+	ID              int              `json:"id,omitempty"`
+	DateCreated     string           `json:"date_created,omitempty"`
+	DateCreatedGmt  string           `json:"date_created_gmt,omitempty"`
+	Amount          string           `json:"amount,omitempty"`
+	Reason          string           `json:"reason,omitempty"`
+	RefundedBy      int              `json:"refunded_by,omitempty"`
+	RefundedPayment bool             `json:"refunded_payment,omitempty"`
+	ApiRefund       bool             `json:"api_refund,omitempty"`
+	MetaData        []MetaData       `json:"meta_data,omitempty"`
+	LineItems       []RefundLineItem `json:"line_items,omitempty"`
 }
 
 type RefundLineItem struct {
-	ID          int          `json:"id,omitempty"`
-	Name        string       `json:"name,omitempty"`
-	ProductID   int          `json:"product_id,omitempty"`
-	VariationID int          `json:"variation_id,omitempty"`
-	Quantity    int          `json:"quantity,omitempty"`
-	TaxClass    string       `json:"tax_class,omitempty"`
-	Subtotal    string       `json:"subtotal,omitempty"`
-	SubtotalTax string       `json:"subtotal_tax,omitempty"`
-	Total       string       `json:"total,omitempty"`
-	TotalTax    string       `json:"total_tax,omitempty"`
-	Sku         string       `json:"sku,omitempty"`
-	Price       float64      `json:"price,omitempty"`
-	RefundTotal float64      `json:"refund_total,omitempty"`
-	Taxes       *[]RefundTax `json:"taxes,omitempty"`
-	MetaData    *[]MetaData  `json:"meta_data,omitempty"`
+	ID          int         `json:"id,omitempty"`
+	Name        string      `json:"name,omitempty"`
+	ProductID   int         `json:"product_id,omitempty"`
+	VariationID int         `json:"variation_id,omitempty"`
+	Quantity    int         `json:"quantity,omitempty"`
+	TaxClass    string      `json:"tax_class,omitempty"`
+	Subtotal    string      `json:"subtotal,omitempty"`
+	SubtotalTax string      `json:"subtotal_tax,omitempty"`
+	Total       string      `json:"total,omitempty"`
+	TotalTax    string      `json:"total_tax,omitempty"`
+	Sku         string      `json:"sku,omitempty"`
+	Price       float64     `json:"price,omitempty"`
+	RefundTotal float64     `json:"refund_total,omitempty"`
+	Taxes       []RefundTax `json:"taxes,omitempty"`
+	MetaData    []MetaData  `json:"meta_data,omitempty"`
 }
 
 type RefundTax struct {
@@ -64,13 +64,13 @@ type ListRefundParams struct {
 	After         string `url:"after,omitempty"`
 	Before        string `url:"before,omitempty"`
 	DatesAreGmt   bool   `url:"dates_are_gmt,omitempty"`
-	Exclude       *[]int `url:"exclude,omitempty"`
-	Include       *[]int `url:"include,omitempty"`
+	Exclude       []int  `url:"exclude,omitempty,comma"`
+	Include       []int  `url:"include,omitempty,comma"`
 	Offset        int    `url:"offset,omitempty"`
 	Order         string `url:"order,omitempty"`
 	OrderBy       string `url:"orderby,omitempty"`
-	Parent        *[]int `url:"parent,omitempty"`
-	ParentExclude *[]int `url:"parent_exclude,omitempty"`
+	Parent        []int  `url:"parent,omitempty,comma"`
+	ParentExclude []int  `url:"parent_exclude,omitempty,comma"`
 	Dp            int    `url:"dp,omitempty"`
 }
 

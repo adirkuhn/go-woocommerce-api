@@ -144,8 +144,8 @@ type ListProductParams struct {
 	Page           int      `url:"page,omitempty"`
 	PerPage        int      `url:"per_page,omitempty"`
 	Search         string   `url:"search,omitempty"`
-	Exclude        []int    `url:"exclude,omitempty"`
-	Include        []int    `url:"include,omitempty"`
+	Exclude        []int    `url:"exclude,omitempty,comma"`
+	Include        []int    `url:"include,omitempty,comma"`
 	Offset         int      `url:"offset,omitempty"`
 	Order          string   `url:"order,omitempty"`
 	OrderBy        string   `url:"orderby,omitempty"`
@@ -169,8 +169,8 @@ type ListProductParams struct {
 	MinPrice       string   `url:"min_price,omitempty"`
 	MaxPrice       string   `url:"max_price,omitempty"`
 	StockStatus    string   `url:"stock_status,omitempty"`
-	Parent         []int    `url:"parent,omitempty"`
-	ParentExclude  []int    `url:"parent_exclude,omitempty"`
+	Parent         []int    `url:"parent,omitempty,comma"`
+	ParentExclude  []int    `url:"parent_exclude,omitempty,comma"`
 	Fields         []string `url:"_fields,omitempty,comma"`
 }
 

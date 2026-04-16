@@ -130,12 +130,12 @@ func TestTaxRatesBatch(t *testing.T) {
 		assertMethod(t, r, http.MethodPost)
 		assertPathSuffix(t, r, "/taxes/batch")
 		writeJSON(w, &BatchTaxRateUpdateResponse{
-			Create: &[]TaxRate{{ID: 3, Rate: "5.000"}, {ID: 4, Rate: "10.000"}},
+			Create: []TaxRate{{ID: 3, Rate: "5.000"}, {ID: 4, Rate: "10.000"}},
 		})
 	})
 
 	result, _, err := client.TaxRates.Batch(context.Background(), &BatchTaxRateUpdate{
-		Create: &[]TaxRate{
+		Create: []TaxRate{
 			{Country: "US", State: "NY", Rate: "5.000"},
 			{Country: "US", State: "TX", Rate: "10.000"},
 		},
@@ -143,8 +143,8 @@ func TestTaxRatesBatch(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if len(*result.Create) != 2 {
-		t.Errorf("create len: got %d, want 2", len(*result.Create))
+	if len(result.Create) != 2 {
+		t.Errorf("create len: got %d, want 2", len(result.Create))
 	}
 }
 

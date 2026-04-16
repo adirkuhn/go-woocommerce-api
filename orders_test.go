@@ -124,18 +124,18 @@ func TestOrdersBatch(t *testing.T) {
 		assertMethod(t, r, http.MethodPost)
 		assertPathSuffix(t, r, "/orders/batch")
 		writeJSON(w, &BatchOrderUpdateResponse{
-			Create: &[]Order{{ID: 10}},
+			Create: []Order{{ID: 10}},
 		})
 	})
 
 	result, _, err := client.Orders.Batch(context.Background(), &BatchOrderUpdate{
-		Create: &[]Order{{Status: "pending"}},
+		Create: []Order{{Status: "pending"}},
 	})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if len(*result.Create) != 1 {
-		t.Errorf("create len: got %d, want 1", len(*result.Create))
+	if len(result.Create) != 1 {
+		t.Errorf("create len: got %d, want 1", len(result.Create))
 	}
 }
 

@@ -21,33 +21,33 @@ type CouponsService struct {
 
 // Coupon object. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#coupon-properties
 type Coupon struct {
-	ID                        int         `json:"id,omitempty"`
-	Code                      string      `json:"code,omitempty"`
-	Amount                    string      `json:"amount,omitempty"`
-	DateCreated               string      `json:"date_created,omitempty"`
-	DateCreatedGmt            string      `json:"date_created_gmt,omitempty"`
-	DateModified              string      `json:"date_modified,omitempty"`
-	DateModifiedGmt           string      `json:"date_modified_gmt,omitempty"`
-	DiscountType              string      `json:"discount_type,omitempty"`
-	Description               string      `json:"description,omitempty"`
-	DateExpires               string      `json:"date_expires,omitempty"`
-	DateExpiresGmt            string      `json:"date_expires_gmt,omitempty"`
-	UsageCount                int         `json:"usage_count,omitempty"`
-	IndividualUse             bool        `json:"individual_use,omitempty"`
-	UsageLimit                int         `json:"usage_limit,omitempty"`
-	UsageLimitPerUser         int         `json:"usage_limit_per_user,omitempty"`
-	LimitUsageToXItems        int         `json:"limit_usage_to_x_items,omitempty"`
-	FreeShipping              bool        `json:"free_shipping,omitempty"`
-	ExcludeSaleItems          bool        `json:"exclude_sale_items,omitempty"`
-	MinimumAmount             string      `json:"minimum_amount,omitempty"`
-	MaximumAmount             string      `json:"maximum_amount,omitempty"`
-	EmailRestrictions         any         `json:"email_restrictions,omitempty"`
-	UsedBy                    any         `json:"used_by,omitempty"`
-	ProductIds                *[]int      `json:"product_ids,omitempty"`
-	ExcludedProductIds        *[]int      `json:"excluded_product_ids,omitempty"`
-	ProductCategories         *[]int      `json:"product_categories,omitempty"`
-	ExcludedProductCategories *[]int      `json:"excluded_product_categories,omitempty"`
-	MetaData                  *[]MetaData `json:"meta_data,omitempty"`
+	ID                        int        `json:"id,omitempty"`
+	Code                      string     `json:"code,omitempty"`
+	Amount                    string     `json:"amount,omitempty"`
+	DateCreated               string     `json:"date_created,omitempty"`
+	DateCreatedGmt            string     `json:"date_created_gmt,omitempty"`
+	DateModified              string     `json:"date_modified,omitempty"`
+	DateModifiedGmt           string     `json:"date_modified_gmt,omitempty"`
+	DiscountType              string     `json:"discount_type,omitempty"`
+	Description               string     `json:"description,omitempty"`
+	DateExpires               string     `json:"date_expires,omitempty"`
+	DateExpiresGmt            string     `json:"date_expires_gmt,omitempty"`
+	UsageCount                int        `json:"usage_count,omitempty"`
+	IndividualUse             bool       `json:"individual_use,omitempty"`
+	UsageLimit                int        `json:"usage_limit,omitempty"`
+	UsageLimitPerUser         int        `json:"usage_limit_per_user,omitempty"`
+	LimitUsageToXItems        int        `json:"limit_usage_to_x_items,omitempty"`
+	FreeShipping              bool       `json:"free_shipping,omitempty"`
+	ExcludeSaleItems          bool       `json:"exclude_sale_items,omitempty"`
+	MinimumAmount             string     `json:"minimum_amount,omitempty"`
+	MaximumAmount             string     `json:"maximum_amount,omitempty"`
+	EmailRestrictions         any        `json:"email_restrictions,omitempty"`
+	UsedBy                    any        `json:"used_by,omitempty"`
+	ProductIds                []int      `json:"product_ids,omitempty"`
+	ExcludedProductIds        []int      `json:"excluded_product_ids,omitempty"`
+	ProductCategories         []int      `json:"product_categories,omitempty"`
+	ExcludedProductCategories []int      `json:"excluded_product_categories,omitempty"`
+	MetaData                  []MetaData `json:"meta_data,omitempty"`
 }
 
 type ListCouponParams struct {
@@ -55,8 +55,8 @@ type ListCouponParams struct {
 	Page           int    `url:"page,omitempty"`
 	PerPage        int    `url:"per_page,omitempty"`
 	Search         string `url:"search,omitempty"`
-	Exclude        *[]int `url:"exclude,omitempty"`
-	Include        *[]int `url:"include,omitempty"`
+	Exclude        []int  `url:"exclude,omitempty,comma"`
+	Include        []int  `url:"include,omitempty,comma"`
 	Offset         int    `url:"offset,omitempty"`
 	Order          string `url:"order,omitempty"`
 	OrderBy        string `url:"orderby,omitempty"`
@@ -73,15 +73,15 @@ type DeleteCouponParams struct {
 }
 
 type BatchCouponUpdate struct {
-	Create *[]Coupon `json:"create,omitempty"`
-	Update *[]Coupon `json:"update,omitempty"`
-	Delete *[]int    `json:"delete,omitempty"`
+	Create []Coupon `json:"create,omitempty"`
+	Update []Coupon `json:"update,omitempty"`
+	Delete []int    `json:"delete,omitempty"`
 }
 
 type BatchCouponUpdateResponse struct {
-	Create *[]Coupon `json:"create,omitempty"`
-	Update *[]Coupon `json:"update,omitempty"`
-	Delete *[]Coupon `json:"delete,omitempty"`
+	Create []Coupon `json:"create,omitempty"`
+	Update []Coupon `json:"update,omitempty"`
+	Delete []Coupon `json:"delete,omitempty"`
 }
 
 // Create a coupon. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#create-a-coupon

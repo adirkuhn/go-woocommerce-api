@@ -40,8 +40,8 @@ type ListTaxRatesParams struct {
 	Page    int    `url:"page,omitempty"`
 	PerPage int    `url:"per_page,omitempty"`
 	Search  string `url:"search,omitempty"`
-	Exclude *[]int `url:"exclude,omitempty"`
-	Include *[]int `url:"include,omitempty"`
+	Exclude []int  `url:"exclude,omitempty,comma"`
+	Include []int  `url:"include,omitempty,comma"`
 	Offset  int    `url:"offset,omitempty"`
 	Order   string `url:"order,omitempty"`
 	OrderBy string `url:"orderby,omitempty"`
@@ -53,15 +53,15 @@ type DeleteTaxRateParams struct {
 }
 
 type BatchTaxRateUpdate struct {
-	Create *[]TaxRate `json:"create,omitempty"`
-	Update *[]TaxRate `json:"update,omitempty"`
-	Delete *[]int     `json:"delete,omitempty"`
+	Create []TaxRate `json:"create,omitempty"`
+	Update []TaxRate `json:"update,omitempty"`
+	Delete []int     `json:"delete,omitempty"`
 }
 
 type BatchTaxRateUpdateResponse struct {
-	Create *[]TaxRate `json:"create,omitempty"`
-	Update *[]TaxRate `json:"update,omitempty"`
-	Delete *[]TaxRate `json:"delete,omitempty"`
+	Create []TaxRate `json:"create,omitempty"`
+	Update []TaxRate `json:"update,omitempty"`
+	Delete []TaxRate `json:"delete,omitempty"`
 }
 
 // Create a tax rate. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#create-a-tax-rate

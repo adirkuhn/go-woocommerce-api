@@ -22,22 +22,22 @@ type CustomersService struct {
 
 // Customer object. Reference: https://woocommerce.github.io/woocommerce-rest-api-docs/#customer-properties
 type Customer struct {
-	ID               int         `json:"id,omitempty"`
-	DateCreated      string      `json:"date_created,omitempty"`
-	DateCreatedGmt   string      `json:"date_created_gmt,omitempty"`
-	DateModified     string      `json:"date_modified,omitempty"`
-	DateModifiedGmt  string      `json:"date_modified_gmt,omitempty"`
-	Email            string      `json:"email,omitempty"`
-	FirstName        string      `json:"first_name,omitempty"`
-	LastName         string      `json:"last_name,omitempty"`
-	Role             string      `json:"role,omitempty"`
-	Username         string      `json:"username,omitempty"`
-	AvatarURL        string      `json:"avatar_url,omitempty"`
-	IsPayingCustomer bool        `json:"is_paying_customer"`
-	MetaData         *[]MetaData `json:"meta_data,omitempty"`
-	Billing          *Billing    `json:"billing,omitempty"`
-	Shipping         *Shipping   `json:"shipping,omitempty"`
-	Links            *Links      `json:"_links,omitempty"`
+	ID               int        `json:"id,omitempty"`
+	DateCreated      string     `json:"date_created,omitempty"`
+	DateCreatedGmt   string     `json:"date_created_gmt,omitempty"`
+	DateModified     string     `json:"date_modified,omitempty"`
+	DateModifiedGmt  string     `json:"date_modified_gmt,omitempty"`
+	Email            string     `json:"email,omitempty"`
+	FirstName        string     `json:"first_name,omitempty"`
+	LastName         string     `json:"last_name,omitempty"`
+	Role             string     `json:"role,omitempty"`
+	Username         string     `json:"username,omitempty"`
+	AvatarURL        string     `json:"avatar_url,omitempty"`
+	IsPayingCustomer bool       `json:"is_paying_customer"`
+	MetaData         []MetaData `json:"meta_data,omitempty"`
+	Billing          *Billing   `json:"billing,omitempty"`
+	Shipping         *Shipping  `json:"shipping,omitempty"`
+	Links            *Links     `json:"_links,omitempty"`
 }
 
 type ListCustomerParams struct {
@@ -45,8 +45,8 @@ type ListCustomerParams struct {
 	Page    int    `url:"page,omitempty"`
 	PerPage int    `url:"per_page,omitempty"`
 	Search  string `url:"search,omitempty"`
-	Exclude *[]int `url:"exclude,omitempty"`
-	Include *[]int `url:"include,omitempty"`
+	Exclude []int  `url:"exclude,omitempty,comma"`
+	Include []int  `url:"include,omitempty,comma"`
 	Offset  int    `url:"offset,omitempty"`
 	Order   string `url:"order,omitempty"`
 	OrderBy string `url:"orderby,omitempty"`
