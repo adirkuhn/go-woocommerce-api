@@ -56,7 +56,7 @@ type Product struct {
 	TaxStatus         string              `json:"tax_status,omitempty"`
 	TaxClass          string              `json:"tax_class,omitempty"`
 	ManageStock       bool                `json:"manage_stock,omitempty"`
-	StockQuantity     int                 `json:"stock_quantity,omitempty"`
+	StockQuantity     *int                `json:"stock_quantity,omitempty"`
 	StockStatus       string              `json:"stock_status,omitempty"`
 	LowStockAmount    *int                `json:"low_stock_amount,omitempty"`
 	Backorders        string              `json:"backorders,omitempty"`

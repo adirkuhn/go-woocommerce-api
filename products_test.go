@@ -228,6 +228,48 @@ func TestProductsList_RealJSON(t *testing.T) {
 	}
 }
 
+func TestProduct_SetStockQuantity_ToZero_NotIgnored(t *testing.T) {
+	stockQuantity := 0
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
+		assertMethod(t, r, http.MethodPut)
+		assertPathSuffix(t, r, "/products/1")
+
+		var payload map[string]any
+		if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+			t.Fatalf("failed to decode request body: %v", err)
+		}
+
+		// Verify field exists
+		value, ok := payload["stock_quantity"]
+		if !ok {
+			t.Fatal("stock_quantity was omitted from payload")
+		}
+
+		// JSON numbers decode as float64
+		if value.(float64) != 0 {
+			t.Fatalf("stock_quantity: got %v, want 0", value)
+		}
+
+		writeJSON(w, &Product{
+			ID:            1,
+			StockQuantity: &stockQuantity,
+		})
+	})
+
+	_, _, err := client.Products.Update(
+		context.Background(),
+		"1",
+		&Product{
+			ID:            1,
+			StockQuantity: &stockQuantity,
+		},
+	)
+
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
 func assertProduct(t *testing.T, got *Product, want *Product) {
 	t.Helper()
 
