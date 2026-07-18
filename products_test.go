@@ -270,6 +270,75 @@ func TestProduct_SetStockQuantity_ToZero_NotIgnored(t *testing.T) {
 	}
 }
 
+// TestProductsGet_NumericSalePrice_UnmarshalsAsString reproduces a real
+// payload from a store running a bundle-product plugin ("woosb" type) that
+// recalculates sale_price and re-serialises it as a bare JSON number instead
+// of WooCommerce's documented string — this used to fail the whole decode
+// with "cannot unmarshal number into Go struct field Product.sale_price of
+// type string".
+func TestProductsGet_NumericSalePrice_UnmarshalsAsString(t *testing.T) {
+	client := newTestServerFn(t, func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{
+			"id": 3263,
+			"name": "PROMOÇÃO - Pacote com 2 Tapiocas da Terrinha",
+			"type": "woosb",
+			"price": "6.99",
+			"regular_price": "7.98",
+			"sale_price": 6.99
+		}`))
+	})
+
+	product, _, err := client.Products.Get(context.Background(), "3263")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if product.Price != "6.99" {
+		t.Errorf("Price: got %q, want %q", product.Price, "6.99")
+	}
+	if product.RegularPrice != "7.98" {
+		t.Errorf("RegularPrice: got %q, want %q", product.RegularPrice, "7.98")
+	}
+	if product.SalePrice != "6.99" {
+		t.Errorf("SalePrice: got %q, want %q", product.SalePrice, "6.99")
+	}
+}
+
+func TestFlexibleString_NumericAndStringAndNull(t *testing.T) {
+	cases := []struct {
+		name string
+		json string
+		want FlexibleString
+	}{
+		{"quoted string", `"6.99"`, "6.99"},
+		{"bare integer", `7`, "7"},
+		{"bare decimal", `6.99`, "6.99"},
+		{"null", `null`, ""},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			var got FlexibleString
+			if err := json.Unmarshal([]byte(tc.json), &got); err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if got != tc.want {
+				t.Errorf("got %q, want %q", got, tc.want)
+			}
+		})
+	}
+}
+
+func TestFlexibleString_MarshalsAsPlainJSONString(t *testing.T) {
+	out, err := json.Marshal(FlexibleString("6.99"))
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if string(out) != `"6.99"` {
+		t.Errorf("got %s, want %s", out, `"6.99"`)
+	}
+}
+
 func assertProduct(t *testing.T, got *Product, want *Product) {
 	t.Helper()
 

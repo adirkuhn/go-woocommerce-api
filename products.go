@@ -36,9 +36,9 @@ type Product struct {
 	Description       string              `json:"description,omitempty"`
 	ShortDescription  string              `json:"short_description,omitempty"`
 	Sku               string              `json:"sku,omitempty"`
-	Price             string              `json:"price,omitempty"`
-	RegularPrice      string              `json:"regular_price,omitempty"`
-	SalePrice         string              `json:"sale_price,omitempty"`
+	Price             FlexibleString      `json:"price,omitempty"`
+	RegularPrice      FlexibleString      `json:"regular_price,omitempty"`
+	SalePrice         FlexibleString      `json:"sale_price,omitempty"`
 	DateOnSaleFrom    string              `json:"date_on_sale_from,omitempty"`
 	DateOnSaleFromGmt string              `json:"date_on_sale_from_gmt,omitempty"`
 	DateOnSaleTo      string              `json:"date_on_sale_to,omitempty"`
